@@ -1,32 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
-    <plugin-info>
-        <description>${project.description}</description>
-        <version>${project.version}</version>
-        <vendor name="${project.organization.name}" url="${project.organization.url}" />
-        <param name="plugin-icon">images/pluginIcon.png</param>
-        <param name="plugin-logo">images/pluginLogo.png</param>
-    </plugin-info>
-
-    <!-- add our i18n resource -->
-    <resource type="i18n" name="i18n" location="stash-hashtags"/>
-    
-    <!-- add our web resources -->
-    <web-resource key="stash-hashtags-resources" name="stash-hashtags Web Resources">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        
-        <resource type="download" name="stash-hashtags.css" location="/css/stash-hashtags.css"/>
-        <resource type="download" name="stash-hashtags.js" location="/js/stash-hashtags.js"/>
-        <resource type="download" name="images/" location="/images"/>
-
-        <context>stash-hashtags</context>
-    </web-resource>
-    
-    <!-- publish our component -->
-    <component key="myPluginComponent" class="com.jklein.stash.hashtags.MyPluginComponentImpl" public="true">
-        <interface>com.jklein.stash.hashtags.MyPluginComponent</interface>
-    </component>
-    
-    <!-- import from the product container -->
-    <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties" />
-    
+  <plugin-info>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+    <param name="plugin-icon">images/pluginIcon.png</param>
+    <param name="plugin-logo">images/pluginLogo.png</param>
+  </plugin-info>
+  <!-- add our i18n resource -->
+  <resource type="i18n" name="i18n" location="stash-hashtags"/>
+  <!-- add our web resources -->
+  <web-resource key="stash-hashtags-resources" name="stash-hashtags Web Resources">
+    <resource type="download" name="images/" location="/images"/>
+    <resource type="download" name="css/" location="/css"/>
+    <resource type="download" name="js/" location="/js"/>
+    <resource type="download" name="jquery.js" location="/js/jquery.js"/>
+    <resource type="download" name="jquery.dataTables.min.js" location="/js/jquery.dataTables.min.js"/>
+    <resource type="download" name="stash-hashtags.js" location="/js/stash-hashtags.js"/>
+    <resource type="download" name="jquery.dataTables.css" location="/css/jquery.dataTables.css"/>
+    <resource type="download" name="stash-hashtags.css" location="/css/stash-hashtags.css"/>
+  </web-resource>
+  <!-- add our stash resources -->
+  <stash-resource key="hashtag-soy" name="Hashtag Soy Templates">
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <dependency>com.atlassian.auiplugin:soy</dependency>
+    <dependency>com.atlassian.auiplugin:aui-experimental-soy-templates</dependency>
+    <dependency>com.atlassian.auiplugin:aui-experimental-table-sortable</dependency>
+    <dependency>com.atlassian.auiplugin:aui-experimental-page-layout</dependency>
+    <directory location="/template/"/>
+  </stash-resource>
+  <!-- import from the product container -->
+  <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
+  <component-import key="soyTemplateRenderer" interface="com.atlassian.soy.renderer.SoyTemplateRenderer" filter=""/>
+  <component-import key="stashAuthenticationContext" interface="com.atlassian.stash.user.StashAuthenticationContext" />
+  <component-import key="loginUriProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider" />
+  <servlet name="Hashtag Servlet" i18n-name-key="hashtag-servlet.name" key="hashtag-servlet" class="com.jklein.stash.hashtags.HashtagServlet">
+    <description key="hashtag-servlet.description">Servlet for displaying Stash projects organized by hashtag.</description>
+    <url-pattern>/hashtag/*</url-pattern>
+  </servlet>
+  <web-item name="Hashtags" i18n-name-key="hashtag-header-link.name" key="hashtag-header-link" section="header.global.primary" weight="1000">
+    <condition class="com.atlassian.stash.web.conditions.IsLoggedInCondition" />
+    <description key="hashtag-header-link.description">Hashtag link for main Stash navbar.</description>
+    <label key="hashtag-header-link.label"/>
+    <link linkId="hashtag-header-link-link">/plugins/servlet/hashtag/</link>
+    <tooltip key="hashtag-header-link.tooltip">List projects by hashtag</tooltip>
+  </web-item>
+  <component-import key="projectService" interface="com.atlassian.stash.project.ProjectService" filter=""/>
 </atlassian-plugin>

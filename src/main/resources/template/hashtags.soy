@@ -1,0 +1,56 @@
+{namespace hashtag.ui}
+
+/**
+* @param hashtagProjectsMap Map<String, ArrayList<String>> mapping hashtags to a list of tagged projects.
+*/
+{template .hashtagPanel}
+{webResourceManager_requireResource('com.jklein.stash.stash-hashtags:stash-hashtags-resources')}
+<html>
+<head>
+  <meta name="decorator" content="atl.general" />
+  <title>Stash - Project Hashtags</title>
+</head>
+<body>
+  {call aui.page.pageHeader}
+    {param content}
+      {call aui.page.pageHeaderMain}
+        {param content}
+          <h1>Project Tags</h1>
+        {/param}
+      {/call}
+    {/param}
+  {/call}
+  {call aui.page.pagePanel}
+    {param content}
+      {call aui.page.pagePanelContent}
+        {param content}
+          <table id='hashtag_table' class="aui">
+            <thead>
+              <tr>
+                <th>Hashtag</th>
+                <th>Projects</th>
+              </tr>
+            </thead>
+            <tbody>
+              {foreach $hashtag in keys($hashtagProjectsMap)}
+                <tr>
+                  <td><b>{$hashtag}</b></td>
+                  <td>
+                    {foreach $project in $hashtagProjectsMap[$hashtag]}
+                      <a href="{$project.url}">{$project.name}</a>
+                      {if not isLast($project)}
+                        ,&#32;
+                      {/if}
+                    {/foreach}
+                  </td>
+                </tr>
+              {/foreach}
+            </tbody>
+          </table>
+        {/param}
+      {/call}
+    {/param}
+  {/call}
+</body>
+</html>
+{/template}
